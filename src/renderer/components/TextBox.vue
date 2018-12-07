@@ -1,18 +1,24 @@
 <template>
-    <router-link to="/">Home</router-link>
+  <div class='display'>
+    <span>AAA</span>
+  </div>
 </template>
 
 <script>
-
-
-    
+  export default {
+    name: 'TextBox',
+    data () {
+      return {
+      }
+    }
+  }
 </script>
 
 <style>
-    .display {
-        border: 5px solid #D3DCE6; 
-        width: 30rem; 
-        height: 35rem; 
-        overflow: scroll
-    }
+  .display {
+    border: 5px solid #D3DCE6; 
+    width: calc(100% - 81px); 
+    height: calc(100% - 81px);
+    overflow: scroll
+  }
 </style>
