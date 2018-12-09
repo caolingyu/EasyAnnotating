@@ -3,6 +3,9 @@
     <el-header>
       <toolbar></toolbar>
     </el-header>
+    <el-aside width="200px">
+      <leftbar></leftbar>
+    </el-aside>
     <el-main>
       <textbox></textbox>
     </el-main>
@@ -12,6 +15,7 @@
 <script>
   import textbox from './TextBox'
   import toolbar from './ToolBar'
+  import leftbar from './LeftSideBar'
 
   export default {
     name: 'Layout',
@@ -22,6 +26,7 @@
     components: {
       textbox,
       toolbar,
+      leftbar
     }
   }
 </script>
