@@ -1,9 +1,5 @@
 const state = {
-  label_set: {
-    disease: {name: '疾病和诊断', color: '#409EFF'},
-    symptom: {name: '症状和体征', color: '#F56C6C'},
-    labtest: {name: '检查和检验', color: '#E6A23C'}
-  },
+  label_set: null,
   cur_idx: 0,
   selected_idx: [],
   file_names: [],
@@ -12,6 +8,9 @@ const state = {
 }
 
 const mutations = {
+  CHANGE_LABEL_SET (state, labelSet) {
+    state.label_set = labelSet
+  },
   APPEND_FILE_NAMES (state, fileNames) {
     state.file_names.push(fileNames)
   },
@@ -30,6 +29,9 @@ const mutations = {
 }
 
 const actions = {
+  changeLabelSet ({ commit }, labelSet) {
+    commit('CHANGE_LABEL_SET', labelSet)
+  },
   appendFileNames ({ commit }, fileNames) {
     commit('APPEND_FILE_NAMES', fileNames)
   },

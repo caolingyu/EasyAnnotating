@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- <span>实体类型</span> -->
     <el-button round v-for="(item, index) in getLabelSet" :style="{'background-color': item.color}" :key=index @click="changeLabel(item.name, item.color)">{{ item.name }}</el-button>
   </div>
 </template>

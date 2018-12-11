@@ -1,14 +1,12 @@
 <template>
   <div style="display: inline">
-    <el-button type="primary" plain size="small" @click="dialogVisible = true">上传文件</el-button>
+    <el-button type="primary" plain size="small" @click="dialogVisible = true">上传配置</el-button>
     <el-dialog title="上传您的文件" :visible.sync="dialogVisible">
-      <el-upload 
-        :file-list="uploadFiles"
-        action="alert" 
+      <el-upload :file-list="uploadFiles" action="alert" 
         :auto-upload="false" 
-        multiple 
         :on-change="loadFromFile" 
-        :on-remove="handleRemove">
+        :on-remove="handleRemove"
+        :on-exceed="handleExceed">
         <el-button size="small" type="primary">选择文件</el-button>
         <div slot="tip"></div>
       </el-upload>
@@ -24,10 +22,8 @@
   export default {
     data () {
       return {
-        fileName: null,
-        file: null,
-        uploadFilename: null,
         uploadFiles: [],
+        labelSet: null,
         dialogVisible: false
       }
     },
@@ -37,8 +33,11 @@
         this.uploadFiles.splice(this.uploadFiles.indexOf(file), 1)
       },
 
+      handleExceed (files, fileList) {
+        this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`)
+      },
+
       loadFromFile (file, fileList) {
-        this.uploadFilename = file.name
         this.uploadFiles = fileList
       },
 
@@ -48,19 +47,9 @@
             let reader = new FileReader()
             reader.readAsText(f.raw)
             reader.onload = e => {
-              this.fileName = f.raw.name
               this.file = e.target.result
-              let fileToSave = []
-              for (let i = 0; i < this.file.length; i++) {
-                fileToSave.push({
-                  char: this.file[i],
-                  index: i,
-                  label: 'None',
-                  color: this.$store.state.Upload.label_set.label
-                })
-              }
-              this.$store.dispatch('appendFileNames', this.fileName)
-              this.$store.dispatch('appendFiles', fileToSave)
+              this.$store.dispatch('changeLabelSet', JSON.parse(this.file))
+              console.log(this.$store.state.Upload.label_set)
             }
           })
         }
