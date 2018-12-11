@@ -49,7 +49,7 @@
                 fileToSave.push({
                   char: this.file[i],
                   index: i,
-                  label: null,
+                  label: 'None',
                   color: this.$store.state.Upload.label_set.label
                 })
               }
