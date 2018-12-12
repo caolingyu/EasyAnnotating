@@ -1,6 +1,6 @@
 <template>
   <div style="display: inline">
-    <el-button type="primary" plain size="small" @click="dialogVisible = true">上传配置</el-button>
+    <el-button icon="el-icon-setting" @click="dialogVisible = true"></el-button>
     <el-dialog title="上传您的文件" :visible.sync="dialogVisible">
       <el-upload :file-list="uploadFiles" action="alert" 
         :auto-upload="false" 
@@ -49,7 +49,6 @@
             reader.onload = e => {
               this.file = e.target.result
               this.$store.dispatch('changeLabelSet', JSON.parse(this.file))
-              console.log(this.$store.state.Upload.label_set)
             }
           })
         }

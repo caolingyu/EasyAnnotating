@@ -1,6 +1,6 @@
 <template>
   <div style="display: inline">
-    <el-button type="primary" plain size="small" @click="dialogVisible = true">上传文件</el-button>
+    <el-button icon="el-icon-upload2" @click="dialogVisible = true"></el-button>
     <el-dialog title="上传您的文件" :visible.sync="dialogVisible">
       <el-upload 
         :file-list="uploadFiles"

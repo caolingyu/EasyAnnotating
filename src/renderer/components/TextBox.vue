@@ -8,7 +8,7 @@
   export default {
     computed: {
       getFile () {
-        return this.$store.state.Upload.files[this.$store.state.Upload.cur_idx]
+        return this.$store.state.Upload.annotated[this.$store.state.Upload.cur_idx]
       }
     }
   }
@@ -16,10 +16,18 @@
 
 <style>
   .display {
-    border: 5px solid #D3DCE6; 
-    width: calc(100% - 81px); 
-    height: 500px;
+    /* border: 5px solid #D3DCE6; */
+    /* width: calc(100% - 81px); 
+    height: calc(100% - 81px); */
+    position: relative;
+    background: #fff;
+    width: 100%;
+    height: 100%;
     line-height: 30px;
-    overflow: scroll
+    overflow: auto;
+  }
+
+  ::selection {
+    background: #ffb7b7;
   }
 </style>

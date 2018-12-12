@@ -16,15 +16,20 @@ const mutations = {
   },
   APPEND_FILES (state, files) {
     state.files.push(files)
+    state.annotated = state.files.concat(0)
   },
   CHANGE_CUR_IDX (state, idx) {
     state.cur_idx = idx
   },
   CHANGE_LABEL (state, obj) {
-    state.files[state.cur_idx][obj.idx].label = obj.label
+    state.annotated[state.cur_idx][obj.idx].label = obj.label
   },
   CHANGE_COLOR (state, obj) {
-    state.files[state.cur_idx][obj.idx].color = obj.color
+    state.annotated[state.cur_idx][obj.idx].color = obj.color
+    console.log(state.files[state.cur_idx])
+  },
+  RESET_ANNOTATED (state) {
+    state.annotated[state.cur_idx] = null
   }
 }
 
@@ -46,6 +51,9 @@ const actions = {
       commit('CHANGE_LABEL', {idx: i, label: obj.label})
       commit('CHANGE_COLOR', {idx: i, color: obj.color})
     }
+  },
+  resetAnnotated ({ commit }) {
+    commit('RESET_ANNOTATED')
   }
 }
 

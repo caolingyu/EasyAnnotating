@@ -1,8 +1,17 @@
 <template>
-  <div>
-    <!-- <span>实体类型</span> -->
-    <el-button round v-for="(item, index) in getLabelSet" :style="{'background-color': item.color}" :key=index @click="changeLabel(item.name, item.color)">{{ item.name }}</el-button>
-  </div>
+  <el-aside width="200px">
+    <h3>实体类型</h3>
+    <hr/>
+    <el-row type="flex" justify="space-between" v-for="(item, index) in getLabelSet" :key=index>
+      <el-col>
+        <el-button plain 
+          :style="{'background-color': item.color}"
+          @click="changeLabel(item.name, item.color)">
+          {{ item.name }}
+        </el-button>
+      </el-col>
+    </el-row>
+  </el-aside>
 </template>
 
 <script>
@@ -30,8 +39,32 @@
   }
 </script>
 
-<style>
+<style scoped>
   .el-aside {
     line-height: 60px;
+    background: #D3DCE6;
+  }
+
+  .el-button {
+    display: block;
+    margin: 0 auto;
+    margin-bottom: 10px;
+    margin-top: 10px;
+  }
+
+  h3 {
+    font-weight: 300;
+    color: #574C4C;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+    margin: 0 auto;
+  }
+
+  hr {
+    height: 0;
+    border-left: 0;
+    border-right: 0;
+    border-top: 1px solid #DDD;
+    border-bottom: 1px solid #FFF;
   }
 </style>

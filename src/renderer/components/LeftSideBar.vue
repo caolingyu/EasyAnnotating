@@ -1,7 +1,13 @@
 <template>
-  <el-menu background-color="#D3DCE6" style="text-align: left; margin-left: 20px">
+  <el-menu style="text-align: left; background-color: #333; color: #66b1ff">
     <template slot="title"><i class="el-icon-edit"></i>Files</template>
-    <el-menu-item :index="'1'+index" v-for="(item, index) in getFileList" :key=index @click="changeIndex(index)">{{ item }}</el-menu-item>
+    <el-menu-item 
+      :index="'1'+index" 
+      v-for="(item, index) in getFileList" 
+      :key=index @click="changeIndex(index)"
+      style="color: #66b1ff">
+      {{ item }}
+    </el-menu-item>
   </el-menu>
 </template>
 
@@ -26,6 +32,3 @@
     }
   }
 </script>
-
-<style>
-</style>

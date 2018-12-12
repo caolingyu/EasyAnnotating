@@ -1,0 +1,57 @@
+* {
+    /*background: transparent;*/
+    font-family: -apple-system, "Source Code Pro", Consolas, Monaco, Menlo, Consolas, monospace;
+}
+
+html, body {
+    height: 100%;
+    overflow: hidden;
+    margin: 0px;
+    padding: 0px;
+    font-family: "Segoe UI", "Lucida Grande", Helvetica, Arial, "Microsoft YaHei", FreeSans, Arimo, "Droid Sans", "wenquanyi micro hei", "Hiragino Sans GB", "Hiragino Sans GB W3", FontAwesome, sans-serif;
+    background-color: #ffffff;
+}
+
+#app {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    box-sizing: border-box;
+    min-width: 0;
+}
+
+#app .sidebar {
+    width: 64px;
+    background-color: #333;
+    overflow: hidden;
+}
+
+#app .sidebar .icon {
+    width: 64px;
+    height: 64px;
+    margin-top: 4px;
+    background: url("icon.png") no-repeat center center;
+    background-size: 80%;
+}
+
+#app .sidebar .el-menu-item [class^=el-icon-] {
+    font-size: 24px;
+}
+
+.el-aside {
+    color: #333;
+}
+
+.el-header, .el-footer {
+    background-color: #619ded;
+    color: #333;
+    text-align: center;
+    line-height: 60px;
+  }

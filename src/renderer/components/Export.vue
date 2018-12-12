@@ -1,6 +1,6 @@
 <template>
   <div style="display: inline">
-    <el-button type="primary" plain size="small" @click="dialogFormVisible = true">导出设置</el-button>
+    <el-button icon="el-icon-download" @click="dialogFormVisible = true"></el-button>
     <el-dialog title="导出设置" :visible.sync="dialogFormVisible">
       <el-row>
         <el-col :span="18"><el-input v-model="savePath" clearable></el-input></el-col>
@@ -47,11 +47,10 @@
         // document.getElementById('file-saved').innerHTML = `选择的路径: ${path}`
         // files.write(path, 'write some to test')
       })
-      console.log(this.savePath)
     },
     methods: {
       genAnnotated () {
-        for (let i = 0; i < this.$store.state.Upload.files.length; i++) {
+        for (let i = 0; i < this.$store.state.Upload.annotated.length; i++) {
           let annotatedText = ''
           let fileName = ''
           let curLabel = ''
@@ -63,13 +62,20 @@
               fileName = this.$store.state.Upload.file_names[i] + '.ann'
               annotatedText = '<s>\tO\tNone\n'
               curLabel = 'None'
-              this.$store.state.Upload.files[i].forEach(f => {
-                if (f.label !== curLabel) {
-                  lineToAdd = f.char + '\tI\t' + f.label + '\n'
-                  annotatedText += lineToAdd
-                } else {
-                  lineToAdd = f.char + '\tO\t' + f.label + '\n'
-                  annotatedText += lineToAdd
+              this.$store.state.Upload.annotated[i].forEach(f => {
+                if ((['', ' ', '\t', '\n', '\t'].indexOf(f.char) > -1)) {
+                  if (f.label !== curLabel) {
+                    lineToAdd = f.char + '\tI\t' + f.label + '\n'
+                    annotatedText += lineToAdd
+                  } else {
+                    if (f.label === 'None') {
+                      lineToAdd = f.char + '\tI\t' + f.label + '\n'
+                      annotatedText += lineToAdd
+                    } else {
+                      lineToAdd = f.char + '\tO\t' + f.label + '\n'
+                      annotatedText += lineToAdd
+                    }
+                  }
                 }
                 curLabel = f.label
                 if (([',', '.', '、', '，', '。'].indexOf(f.char) > -1)) {
@@ -85,7 +91,7 @@
               curEnt = ''
               curLabel = 'None'
               startIdx = 0
-              this.$store.state.Upload.files[i].forEach(f => {
+              this.$store.state.Upload.annotated[i].forEach(f => {
                 if (f.label !== curLabel) { // 当前标签和前一个标签不同
                   if (curEnt !== '') {
                     lineToAdd = curEnt + '\t' + startIdx.toString() + '\t' + (f.index - 1).toString() + '\t' + curLabel + '\n'

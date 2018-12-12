@@ -1,9 +1,11 @@
 <template>
-  <el-row>
+  <el-row type="flex" justify="start">
     <config-uploader></config-uploader>    
     <uploader></uploader>
-    <!-- <el-button type="primary" plain size="small" @click="dialogVisible = true">清除标注</el-button> -->
     <exporter></exporter>
+    <div style="display: inline">
+      <el-button icon="el-icon-delete" @click="resetAnnotated"></el-button>
+    </div>
   </el-row>
 </template>
 
@@ -14,12 +16,15 @@
 
   export default {
     components: {
+      configUploader,
       uploader,
-      exporter,
-      configUploader
+      exporter
+    },
+
+    methods: {
+      resetAnnotated () {
+        this.$store.dispatch('resetAnnotated')
+      }
     }
   }
 </script>
-
-<style>
-</style>
