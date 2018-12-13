@@ -1,3 +1,11 @@
+var objDeepCopy = function (source) {
+  var sourceCopy = source instanceof Array ? [] : {}
+  for (var item in source) {
+    sourceCopy[item] = typeof source[item] === 'object' ? objDeepCopy(source[item]) : source[item]
+  }
+  return sourceCopy
+}
+
 const state = {
   label_set: null,
   cur_idx: 0,
@@ -16,7 +24,7 @@ const mutations = {
   },
   APPEND_FILES (state, files) {
     state.files.push(files)
-    state.annotated = state.files.concat(0)
+    state.annotated = objDeepCopy(state.files)
   },
   CHANGE_CUR_IDX (state, idx) {
     state.cur_idx = idx
@@ -26,10 +34,12 @@ const mutations = {
   },
   CHANGE_COLOR (state, obj) {
     state.annotated[state.cur_idx][obj.idx].color = obj.color
-    console.log(state.files[state.cur_idx])
+  },
+  CHANGE_IS_START (state, obj) {
+    state.annotated[state.cur_idx][obj.idx].isStart = obj.isStart
   },
   RESET_ANNOTATED (state) {
-    state.annotated[state.cur_idx] = null
+    state.annotated.splice(state.cur_idx, 1, objDeepCopy(state.files[state.cur_idx]))
   }
 }
 
@@ -48,6 +58,9 @@ const actions = {
   },
   changeLabelAndColor ({ commit }, obj) {
     for (let i = obj.startIdx; i <= obj.endIdx; i++) {
+      if (i === obj.startIdx) {
+        commit('CHANGE_IS_START', {idx: i, isStart: true})
+      }
       commit('CHANGE_LABEL', {idx: i, label: obj.label})
       commit('CHANGE_COLOR', {idx: i, color: obj.color})
     }

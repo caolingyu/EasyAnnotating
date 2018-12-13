@@ -56,7 +56,8 @@
                   char: this.file[i],
                   index: i,
                   label: 'None',
-                  color: this.$store.state.Upload.label_set.label
+                  color: this.$store.state.Upload.label_set.label,
+                  isStart: false
                 })
               }
               this.$store.dispatch('appendFileNames', this.fileName)

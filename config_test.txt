@@ -1,5 +1,8 @@
 {
-  "disease": {"name": "疾病和诊断", "color": "#409EFF"},
-  "symptom": {"name": "症状和体征", "color": "#F56C6C"},
-  "labtest": {"name": "检查和检验", "color": "#E6A23C"}
+  "disease": {"name": "疾病", "color": "#e0a1b9", "shortcuts": "command+1"},
+  "symptom": {"name": "药物", "color": "#d2a1e0", "shortcuts": "command+2"},
+  "labtest": {"name": "检验", "color": "#7676e0", "shortcuts": "command+3"},
+  "finding": {"name": "症状和体征", "color": "#61e0e2", "shortcuts": "command+4"},
+  "procedure": {"name": "操作", "color": "#59d18b", "shortcuts": "command+5"},
+  "microbe": {"name": "微生物", "color": "#b9d659", "shortcuts": "command+6"}
 }

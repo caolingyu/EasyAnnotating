@@ -5,7 +5,8 @@
     <el-row type="flex" justify="space-between" v-for="(item, index) in getLabelSet" :key=index>
       <el-col>
         <el-button plain 
-          :style="{'background-color': item.color}"
+          :id=index
+          :style="{'background-color': item.color, 'color': '#333'}"
           @click="changeLabel(item.name, item.color)">
           {{ item.name }}
         </el-button>
@@ -15,10 +16,18 @@
 </template>
 
 <script>
+  var Mousetrap = require('mousetrap')
+
   export default {
     computed: {
       getLabelSet () {
-        return this.$store.state.Upload.label_set
+        let labelSet = this.$store.state.Upload.label_set
+        if (labelSet) {
+          Object.keys(labelSet).forEach(l => {
+            Mousetrap.bind(labelSet[l].shortcuts, () => { this.changeLabel(labelSet[l].name, labelSet[l].color) })
+          })
+        }
+        return labelSet
       }
     },
 

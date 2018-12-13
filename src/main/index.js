@@ -32,6 +32,13 @@ function createWindow () {
   mainWindow.on('closed', () => {
     mainWindow = null
   })
+
+  /**
+   * 窗口加载完之后显示
+   */
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show()
+  })
 }
 
 app.on('ready', createWindow)

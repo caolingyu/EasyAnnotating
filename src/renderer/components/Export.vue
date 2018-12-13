@@ -63,12 +63,12 @@
               annotatedText = '<s>\tO\tNone\n'
               curLabel = 'None'
               this.$store.state.Upload.annotated[i].forEach(f => {
-                if ((['', ' ', '\t', '\n', '\t'].indexOf(f.char) > -1)) {
+                if (!(['', ' ', '\t', '\n', '\t'].indexOf(f.char) > -1)) {
                   if (f.label !== curLabel) {
                     lineToAdd = f.char + '\tI\t' + f.label + '\n'
                     annotatedText += lineToAdd
                   } else {
-                    if (f.label === 'None') {
+                    if (f.label === 'None' || f.isStart === true) {
                       lineToAdd = f.char + '\tI\t' + f.label + '\n'
                       annotatedText += lineToAdd
                     } else {
@@ -107,8 +107,14 @@
                     startIdx = 0
                   }
                 } else { // 当前标签和前一个标签相同
-                  if (f.label !== 'None') { // 当前的标签非空
+                  if (f.label !== 'None' && f.isStart === false) { // 当前的标签非空且属于同一实体
                     curEnt += f.char
+                  } else if (f.label !== 'None' && f.isStart === true) { // 当前的标签非空且不属于同一实体
+                    lineToAdd = curEnt + '\t' + startIdx.toString() + '\t' + (f.index - 1).toString() + '\t' + curLabel + '\n'
+                    annotatedText += lineToAdd
+                    curEnt = f.char
+                    curLabel = f.label
+                    startIdx = f.index
                   } else { // 当前标签为空
                     startIdx = ''
                     curEnt = ''
