@@ -38,8 +38,17 @@ const mutations = {
   CHANGE_IS_START (state, obj) {
     state.annotated[state.cur_idx][obj.idx].isStart = obj.isStart
   },
+  CHANGE_LINKED_ENT (state, obj) {
+    state.annotated[state.cur_idx][obj.idx].linkedEntStart = obj.startIdx
+    state.annotated[state.cur_idx][obj.idx].linkedEntEnd = obj.endIdx
+  },
   RESET_ANNOTATED (state) {
     state.annotated.splice(state.cur_idx, 1, objDeepCopy(state.files[state.cur_idx]))
+  },
+  DELETE_FILE (state, idx) {
+    state.file_names.splice(idx, 1)
+    state.files.splice(idx, 1)
+    state.annotated.splice(idx, 1)
   }
 }
 
@@ -63,10 +72,24 @@ const actions = {
       }
       commit('CHANGE_LABEL', {idx: i, label: obj.label})
       commit('CHANGE_COLOR', {idx: i, color: obj.color})
+      commit('CHANGE_LINKED_ENT', {idx: i, startIdx: obj.startIdx, endIdx: obj.endIdx})
+    }
+  },
+  removeEnt ({ commit }, obj) {
+    for (let i = obj.startIdx; i <= obj.endIdx; i++) {
+      if (i === obj.startIdx) {
+        commit('CHANGE_IS_START', {idx: i, isStart: false})
+      }
+      commit('CHANGE_LABEL', {idx: i, label: 'None'})
+      commit('CHANGE_COLOR', {idx: i, color: null})
+      commit('CHANGE_LINKED_ENT', {idx: i, startIdx: null, endIdx: null})
     }
   },
   resetAnnotated ({ commit }) {
     commit('RESET_ANNOTATED')
+  },
+  deleteFile ({ commit }, idx) {
+    commit('DELETE_FILE', idx)
   }
 }
 

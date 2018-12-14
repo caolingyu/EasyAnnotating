@@ -5,7 +5,8 @@
       <el-upload 
         :file-list="uploadFiles"
         action="alert" 
-        :auto-upload="false" 
+        :auto-upload="false"
+        :show-file-list="false"
         multiple 
         :on-change="loadFromFile" 
         :on-remove="handleRemove">
@@ -56,8 +57,10 @@
                   char: this.file[i],
                   index: i,
                   label: 'None',
-                  color: this.$store.state.Upload.label_set.label,
-                  isStart: false
+                  color: null,
+                  isStart: false,
+                  linkedEntStart: null,
+                  linkedEntEnd: null
                 })
               }
               this.$store.dispatch('appendFileNames', this.fileName)
@@ -66,6 +69,8 @@
           })
         }
         this.dialogVisible = false
+        this.uploadFilename = null
+        this.uploadFiles = []
       }
     }
   }

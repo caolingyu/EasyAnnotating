@@ -1,14 +1,64 @@
 <template>
   <div class='display'>
-    <span v-for="(item, index) in getFile" :id=index :key=index :style="{'background-color': item.color}">{{item.char}}</span>
+    <span v-for="(item, index) in getFile" :key=index :style="{'display': 'inline-block'}">
+      <span v-if="item.label!='None'"
+        :id=index
+        :style="{'background-color': item.color, 'cursor': 'pointer'}"
+        @click="clickEnt(index)">
+        {{item.char}}
+      </span>
+      <span v-else
+        :id=index>
+        {{item.char}}
+      </span>
+    </span>
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="30%"
+      :before-close="handleClose">
+      <span>删除实体</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="changeEnt()">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
   export default {
+    data () {
+      return {
+        curIdx: null,
+        dialogVisible: false
+      }
+    },
     computed: {
       getFile () {
         return this.$store.state.Upload.annotated[this.$store.state.Upload.cur_idx]
+      }
+    },
+
+    methods: {
+      clickEnt (index) {
+        this.curIdx = index
+        this.dialogVisible = true
+      },
+
+      changeEnt () {
+        let startIdx = this.$store.state.Upload.annotated[this.$store.state.Upload.cur_idx][this.curIdx].linkedEntStart
+        let endIdx = this.$store.state.Upload.annotated[this.$store.state.Upload.cur_idx][this.curIdx].linkedEntEnd
+        this.$store.dispatch('removeEnt', {startIdx: startIdx, endIdx: endIdx})
+        this.dialogVisible = false
+      },
+
+      handleClose (done) {
+        this.$confirm('确认关闭？')
+          .then(_ => {
+            done()
+          })
+          .catch(_ => {})
       }
     }
   }

@@ -53,6 +53,7 @@
           })
         }
         this.dialogVisible = false
+        this.uploadFiles = []
       }
     }
   }

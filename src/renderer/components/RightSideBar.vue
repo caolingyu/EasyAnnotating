@@ -33,8 +33,10 @@
 
     methods: {
       changeLabel (label, color) {
-        let startIdx = window.getSelection().anchorNode.parentElement.id
-        let endIdx = window.getSelection().focusNode.parentElement.id
+        let anchorNode = window.getSelection().anchorNode.parentElement.id
+        let focusNode = window.getSelection().focusNode.parentElement.id
+        let startIdx = Math.min(anchorNode, focusNode)
+        let endIdx = Math.max(anchorNode, focusNode)
         let combined = {
           label: label,
           color: color,
