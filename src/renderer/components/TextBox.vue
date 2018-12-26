@@ -36,7 +36,14 @@
     },
     computed: {
       getFile () {
-        return this.$store.state.Upload.annotated[this.$store.state.Upload.cur_idx]
+        let fileSelected = this.$store.state.Upload.annotated[this.$store.state.Upload.cur_idx]
+        if (fileSelected) {
+          if ('content' in fileSelected) {
+            return fileSelected.content
+          } else {
+            return []
+          }
+        }
       }
     },
 
@@ -47,8 +54,8 @@
       },
 
       changeEnt () {
-        let startIdx = this.$store.state.Upload.annotated[this.$store.state.Upload.cur_idx][this.curIdx].linkedEntStart
-        let endIdx = this.$store.state.Upload.annotated[this.$store.state.Upload.cur_idx][this.curIdx].linkedEntEnd
+        let startIdx = this.$store.state.Upload.annotated[this.$store.state.Upload.cur_idx].content[this.curIdx].linkedEntStart
+        let endIdx = this.$store.state.Upload.annotated[this.$store.state.Upload.cur_idx].content[this.curIdx].linkedEntEnd
         this.$store.dispatch('removeEnt', {startIdx: startIdx, endIdx: endIdx})
         this.dialogVisible = false
       },

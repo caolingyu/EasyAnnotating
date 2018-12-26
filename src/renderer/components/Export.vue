@@ -62,7 +62,7 @@
               fileName = this.$store.state.Upload.file_names[i] + '.ann'
               annotatedText = '<s>\tO\tNone\n'
               curLabel = 'None'
-              this.$store.state.Upload.annotated[i].forEach(f => {
+              this.$store.state.Upload.annotated[i].content.forEach(f => {
                 if (!(['', ' ', '\t', '\n', '\t'].indexOf(f.char) > -1)) {
                   if (f.label !== curLabel) {
                     lineToAdd = f.char + '\tI\t' + f.label + '\n'
@@ -91,7 +91,7 @@
               curEnt = ''
               curLabel = 'None'
               startIdx = 0
-              this.$store.state.Upload.annotated[i].forEach(f => {
+              this.$store.state.Upload.annotated[i].content.forEach(f => {
                 if (f.label !== curLabel) { // 当前标签和前一个标签不同
                   if (curEnt !== '') {
                     lineToAdd = curEnt + '\t' + startIdx.toString() + '\t' + (f.index - 1).toString() + '\t' + curLabel + '\n'

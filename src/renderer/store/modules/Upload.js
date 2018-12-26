@@ -11,8 +11,10 @@ const state = {
   cur_idx: 0,
   selected_idx: [],
   file_names: [],
+  file_raw: [],
   files: [],
-  annotated: []
+  annotated: [],
+  pre_ann: {} // 预标注
 }
 
 const mutations = {
@@ -22,25 +24,51 @@ const mutations = {
   APPEND_FILE_NAMES (state, fileNames) {
     state.file_names.push(fileNames)
   },
+  APPEND_FILE_RAW (state, files) {
+    state.file_raw.push(files)
+    state.files.push({usePreAnn: false})
+  },
   APPEND_FILES (state, files) {
-    state.files.push(files)
+    state.files[state.cur_idx].content = objDeepCopy(files)
+    state.files[state.cur_idx].isUploaded = true
     state.annotated = objDeepCopy(state.files)
+  },
+  APPEND_PRE_ANN (state, obj) {
+    state.pre_ann[obj.fileName] = obj.file
+  },
+  ADD_PRE_ANN (state, obj) {
+    for (let i = obj.startIdx; i <= obj.endIdx; i++) {
+      if (i === obj.startIdx) {
+        state.annotated[state.cur_idx].content[i].isStart = true
+      }
+      state.annotated[state.cur_idx].content[i].label = obj.category
+      Object.keys(state.label_set).forEach(element => {
+        if (state.label_set[element].name === obj.category) {
+          state.annotated[state.cur_idx].content[i].color = state.label_set[element].color
+        }
+      })
+      state.annotated[state.cur_idx].content[i].linkedEntStart = obj.startIdx
+      state.annotated[state.cur_idx].content[i].linkedEntEnd = obj.endIdx
+    }
+  },
+  FINISH_LOAD_PRE_ANN (state, value) {
+    state.annotated[state.cur_idx].usePreAnn = true
   },
   CHANGE_CUR_IDX (state, idx) {
     state.cur_idx = idx
   },
   CHANGE_LABEL (state, obj) {
-    state.annotated[state.cur_idx][obj.idx].label = obj.label
+    state.annotated[state.cur_idx].content[obj.idx].label = obj.label
   },
   CHANGE_COLOR (state, obj) {
-    state.annotated[state.cur_idx][obj.idx].color = obj.color
+    state.annotated[state.cur_idx].content[obj.idx].color = obj.color
   },
   CHANGE_IS_START (state, obj) {
-    state.annotated[state.cur_idx][obj.idx].isStart = obj.isStart
+    state.annotated[state.cur_idx].content[obj.idx].isStart = obj.isStart
   },
   CHANGE_LINKED_ENT (state, obj) {
-    state.annotated[state.cur_idx][obj.idx].linkedEntStart = obj.startIdx
-    state.annotated[state.cur_idx][obj.idx].linkedEntEnd = obj.endIdx
+    state.annotated[state.cur_idx].content[obj.idx].linkedEntStart = obj.startIdx
+    state.annotated[state.cur_idx].content[obj.idx].linkedEntEnd = obj.endIdx
   },
   RESET_ANNOTATED (state) {
     state.annotated.splice(state.cur_idx, 1, objDeepCopy(state.files[state.cur_idx]))
@@ -61,6 +89,18 @@ const actions = {
   },
   appendFiles ({ commit }, files) {
     commit('APPEND_FILES', files)
+  },
+  appendFileRaw ({ commit }, files) {
+    commit('APPEND_FILE_RAW', files)
+  },
+  appendPreAnn ({ commit }, obj) {
+    commit('APPEND_PRE_ANN', obj)
+  },
+  addPreAnn ({ commit }, obj) {
+    commit('ADD_PRE_ANN', obj)
+  },
+  finishLoadPreAnn ({ commit }, value) {
+    commit('FINISH_LOAD_PRE_ANN', value)
   },
   changeCurIdx ({ commit }, idx) {
     commit('CHANGE_CUR_IDX', idx)

@@ -6,7 +6,7 @@
         :file-list="uploadFiles"
         action="alert" 
         :auto-upload="false"
-        :show-file-list="false"
+        :show-file-list="true"
         multiple 
         :on-change="loadFromFile" 
         :on-remove="handleRemove">
@@ -27,51 +27,44 @@
       return {
         fileName: null,
         file: null,
-        uploadFilename: null,
         uploadFiles: [],
         dialogVisible: false
       }
     },
 
     methods: {
+      loadFromFileConfirmed () {
+        if (this.uploadFiles) {
+          this.uploadFiles.forEach(f => {
+            this.fileName = f.raw.name
+            let spl = this.fileName.split('.')
+            let suffix = spl[spl.length - 1]
+            if (suffix === 'ann') {
+              this.$store.dispatch('appendPreAnn', {fileName: this.fileName.replace('.' + suffix, ''), file: f})
+            } else {
+              this.$store.dispatch('appendFileNames', this.fileName)
+              this.$store.dispatch('appendFileRaw', f)
+            }
+          })
+        }
+        this.dialogVisible = false
+        this.uploadFiles = []
+      },
+
       handleRemove (file, fileList) {
         this.uploadFiles.splice(this.uploadFiles.indexOf(file), 1)
       },
 
       loadFromFile (file, fileList) {
-        this.uploadFilename = file.name
         this.uploadFiles = fileList
-      },
-
-      loadFromFileConfirmed () {
-        if (this.uploadFiles) {
-          this.uploadFiles.forEach(f => {
-            let reader = new FileReader()
-            reader.readAsText(f.raw)
-            reader.onload = e => {
-              this.fileName = f.raw.name
-              this.file = e.target.result
-              let fileToSave = []
-              for (let i = 0; i < this.file.length; i++) {
-                fileToSave.push({
-                  char: this.file[i],
-                  index: i,
-                  label: 'None',
-                  color: null,
-                  isStart: false,
-                  linkedEntStart: null,
-                  linkedEntEnd: null
-                })
-              }
-              this.$store.dispatch('appendFileNames', this.fileName)
-              this.$store.dispatch('appendFiles', fileToSave)
-            }
-          })
-        }
-        this.dialogVisible = false
-        this.uploadFilename = null
-        this.uploadFiles = []
       }
     }
   }
-</script>  
+</script>
+
+<style>
+  .el-upload-list {
+    max-height: 100px;
+    overflow: scroll;
+  }
+</style>

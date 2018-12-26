@@ -49,6 +49,64 @@
     methods: {
       changeIndex (index) {
         this.$store.dispatch('changeCurIdx', index)
+        this.loadFromRaw()
+      },
+
+      loadFromRaw () {
+        let isUploaded = this.$store.state.Upload.files[this.$store.state.Upload.cur_idx].isUploaded
+        if (!isUploaded) {
+          let f = this.$store.state.Upload.file_raw[this.$store.state.Upload.cur_idx]
+          let reader = new FileReader()
+          reader.readAsText(f.raw)
+          reader.onload = e => {
+            let fileLoaded = e.target.result
+            let fileToSave = []
+            for (let i = 0; i < fileLoaded.length; i++) {
+              fileToSave.push({
+                char: fileLoaded[i],
+                index: i,
+                label: 'None',
+                color: null,
+                isStart: false,
+                linkedEntStart: null,
+                linkedEntEnd: null
+              })
+            }
+            this.$store.dispatch('appendFiles', fileToSave)
+          }
+        }
+        let usePreAnn = this.$store.state.Upload.files[this.$store.state.Upload.cur_idx].usePreAnn
+        if (!usePreAnn) {
+          this.loadFromAnn()
+        }
+      },
+
+      loadFromAnn () {
+        let fileName = this.$store.state.Upload.file_names[this.$store.state.Upload.cur_idx]
+        if (fileName in this.$store.state.Upload.pre_ann) {
+          let f = this.$store.state.Upload.pre_ann[fileName]
+          let reader = new FileReader()
+          reader.readAsText(f.raw)
+          reader.onload = e => {
+            let fileLoaded = e.target.result
+            if (fileLoaded) {
+              let line = fileLoaded.split('\n')
+              line.forEach(item => {
+                let spl = item.split('\t')
+                let startIdx = spl[1]
+                let endIdx = spl[2]
+                let category = spl[3]
+                let toAdd = {
+                  startIdx: Number(startIdx),
+                  endIdx: Number(endIdx),
+                  category: category
+                }
+                this.$store.dispatch('addPreAnn', toAdd)
+              })
+              this.$store.dispatch('finishLoadPreAnn', true)
+            }
+          }
+        }
       },
 
       async deleteFile (idx) {

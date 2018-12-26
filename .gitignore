@@ -8,3 +8,8 @@ npm-debug.log
 npm-debug.log.*
 thumbs.db
 !.gitkeep
+
+test_data
+*.py
+*.pyc
+__pycache__
