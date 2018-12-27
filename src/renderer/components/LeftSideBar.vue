@@ -53,7 +53,7 @@
       },
 
       loadFromRaw () {
-        let isUploaded = this.$store.state.Upload.files[this.$store.state.Upload.cur_idx].isUploaded
+        let isUploaded = this.$store.state.Upload.annotated[this.$store.state.Upload.cur_idx].isUploaded
         if (!isUploaded) {
           let f = this.$store.state.Upload.file_raw[this.$store.state.Upload.cur_idx]
           let reader = new FileReader()
@@ -75,7 +75,7 @@
             this.$store.dispatch('appendFiles', fileToSave)
           }
         }
-        let usePreAnn = this.$store.state.Upload.files[this.$store.state.Upload.cur_idx].usePreAnn
+        let usePreAnn = this.$store.state.Upload.annotated[this.$store.state.Upload.cur_idx].usePreAnn
         if (!usePreAnn) {
           this.loadFromAnn()
         }

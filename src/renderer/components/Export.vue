@@ -62,27 +62,31 @@
               fileName = this.$store.state.Upload.file_names[i] + '.ann'
               annotatedText = '<s>\tO\tNone\n'
               curLabel = 'None'
-              this.$store.state.Upload.annotated[i].content.forEach(f => {
-                if (!(['', ' ', '\t', '\n', '\t'].indexOf(f.char) > -1)) {
-                  if (f.label !== curLabel) {
-                    lineToAdd = f.char + '\tI\t' + f.label + '\n'
-                    annotatedText += lineToAdd
-                  } else {
-                    if (f.label === 'None' || f.isStart === true) {
+              if ('content' in this.$store.state.Upload.annotated[i]) {
+                this.$store.state.Upload.annotated[i].content.forEach(f => {
+                  if (!(['', ' ', '\t', '\n', '\t'].indexOf(f.char) > -1)) {
+                    if (f.label !== curLabel) {
                       lineToAdd = f.char + '\tI\t' + f.label + '\n'
                       annotatedText += lineToAdd
                     } else {
-                      lineToAdd = f.char + '\tO\t' + f.label + '\n'
-                      annotatedText += lineToAdd
+                      if (f.label === 'None' || f.isStart === true) {
+                        lineToAdd = f.char + '\tI\t' + f.label + '\n'
+                        annotatedText += lineToAdd
+                      } else {
+                        lineToAdd = f.char + '\tO\t' + f.label + '\n'
+                        annotatedText += lineToAdd
+                      }
                     }
                   }
-                }
-                curLabel = f.label
-                if (([',', '.', '、', '，', '。'].indexOf(f.char) > -1)) {
-                  annotatedText += '<eof>\tI\tNone\n\n'
-                  annotatedText += '<s>\tO\tNone\n'
-                }
-              })
+                  curLabel = f.label
+                  if (([',', '.', '、', '，', '。'].indexOf(f.char) > -1)) {
+                    annotatedText += '<eof>\tI\tNone\n\n'
+                    annotatedText += '<s>\tO\tNone\n'
+                  }
+                })
+              } else {
+                annotatedText = ''
+              }
               this.annotated.push({name: fileName, content: annotatedText})
               break
             case 'BIO':
@@ -91,36 +95,38 @@
               curEnt = ''
               curLabel = 'None'
               startIdx = 0
-              this.$store.state.Upload.annotated[i].content.forEach(f => {
-                if (f.label !== curLabel) { // 当前标签和前一个标签不同
-                  if (curEnt !== '') {
-                    lineToAdd = curEnt + '\t' + startIdx.toString() + '\t' + (f.index - 1).toString() + '\t' + curLabel + '\n'
-                    annotatedText += lineToAdd
+              if ('content' in this.$store.state.Upload.annotated[i]) {
+                this.$store.state.Upload.annotated[i].content.forEach(f => {
+                  if (f.label !== curLabel) { // 当前标签和前一个标签不同
+                    if (curEnt !== '') {
+                      lineToAdd = curEnt + '\t' + startIdx.toString() + '\t' + (f.index - 1).toString() + '\t' + curLabel + '\n'
+                      annotatedText += lineToAdd
+                    }
+                    if (f.label !== 'None') {
+                      curEnt = f.char
+                      curLabel = f.label
+                      startIdx = f.index
+                    } else {
+                      curEnt = ''
+                      curLabel = 'None'
+                      startIdx = 0
+                    }
+                  } else { // 当前标签和前一个标签相同
+                    if (f.label !== 'None' && f.isStart === false) { // 当前的标签非空且属于同一实体
+                      curEnt += f.char
+                    } else if (f.label !== 'None' && f.isStart === true) { // 当前的标签非空且不属于同一实体
+                      lineToAdd = curEnt + '\t' + startIdx.toString() + '\t' + (f.index - 1).toString() + '\t' + curLabel + '\n'
+                      annotatedText += lineToAdd
+                      curEnt = f.char
+                      curLabel = f.label
+                      startIdx = f.index
+                    } else { // 当前标签为空
+                      startIdx = ''
+                      curEnt = ''
+                    }
                   }
-                  if (f.label !== 'None') {
-                    curEnt = f.char
-                    curLabel = f.label
-                    startIdx = f.index
-                  } else {
-                    curEnt = ''
-                    curLabel = 'None'
-                    startIdx = 0
-                  }
-                } else { // 当前标签和前一个标签相同
-                  if (f.label !== 'None' && f.isStart === false) { // 当前的标签非空且属于同一实体
-                    curEnt += f.char
-                  } else if (f.label !== 'None' && f.isStart === true) { // 当前的标签非空且不属于同一实体
-                    lineToAdd = curEnt + '\t' + startIdx.toString() + '\t' + (f.index - 1).toString() + '\t' + curLabel + '\n'
-                    annotatedText += lineToAdd
-                    curEnt = f.char
-                    curLabel = f.label
-                    startIdx = f.index
-                  } else { // 当前标签为空
-                    startIdx = ''
-                    curEnt = ''
-                  }
-                }
-              })
+                })
+              }
               this.annotated.push({name: fileName, content: annotatedText})
               break
           }

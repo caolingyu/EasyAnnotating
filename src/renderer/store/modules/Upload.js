@@ -14,7 +14,8 @@ const state = {
   file_raw: [],
   files: [],
   annotated: [],
-  pre_ann: {} // 预标注
+  pre_ann: {}, // 预标注
+  loading: false
 }
 
 const mutations = {
@@ -26,12 +27,19 @@ const mutations = {
   },
   APPEND_FILE_RAW (state, files) {
     state.file_raw.push(files)
-    state.files.push({usePreAnn: false})
+    state.files.push({isUploaded: false, usePreAnn: false})
+    state.annotated.push({isUploaded: false, usePreAnn: false})
   },
   APPEND_FILES (state, files) {
-    state.files[state.cur_idx].content = objDeepCopy(files)
-    state.files[state.cur_idx].isUploaded = true
-    state.annotated = objDeepCopy(state.files)
+    let tmpList = state.files[state.cur_idx]
+    tmpList.content = objDeepCopy(files)
+    tmpList.isUploaded = true
+    state.files.splice(state.cur_idx, 1, objDeepCopy(tmpList))
+    state.annotated.splice(state.cur_idx, 1, objDeepCopy(tmpList))
+    // state.files[state.cur_idx].content = objDeepCopy(files)
+    // state.annotated[state.cur_idx].content = objDeepCopy(files)
+    // state.files[state.cur_idx].isUploaded = true
+    // state.annotated[state.cur_idx].isUploaded = true
   },
   APPEND_PRE_ANN (state, obj) {
     state.pre_ann[obj.fileName] = obj.file
@@ -52,7 +60,11 @@ const mutations = {
     }
   },
   FINISH_LOAD_PRE_ANN (state, value) {
+    state.files[state.cur_idx].usePreAnn = true
     state.annotated[state.cur_idx].usePreAnn = true
+  },
+  CHANGE_LOADING (state, value) {
+    state.loading = value
   },
   CHANGE_CUR_IDX (state, idx) {
     state.cur_idx = idx
@@ -74,6 +86,7 @@ const mutations = {
     state.annotated.splice(state.cur_idx, 1, objDeepCopy(state.files[state.cur_idx]))
   },
   DELETE_FILE (state, idx) {
+    state.file_raw.splice(idx, 1)
     state.file_names.splice(idx, 1)
     state.files.splice(idx, 1)
     state.annotated.splice(idx, 1)
@@ -101,6 +114,9 @@ const actions = {
   },
   finishLoadPreAnn ({ commit }, value) {
     commit('FINISH_LOAD_PRE_ANN', value)
+  },
+  changeLoading ({ commit }, value) {
+    commit('CHANGE_LOADING', value)
   },
   changeCurIdx ({ commit }, idx) {
     commit('CHANGE_CUR_IDX', idx)
